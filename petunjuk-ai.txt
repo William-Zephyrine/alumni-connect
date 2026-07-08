@@ -1,0 +1,43 @@
+# PETUNJUK UNTUK AI AGENT
+
+Dokumen ini berisi panduan navigasi struktur folder dan file pada proyek Alumni Connect (Next.js App Router) untuk membantu AI Agent lain dalam melakukan perubahan.
+
+## 1. STRUKTUR UTAMA
+Proyek ini menggunakan arsitektur feature-based yang dipadukan dengan App Router Next.js (`src/app`).
+- `src/app`: Berisi routing dan halaman (pages).
+- `src/features`: Berisi komponen, logika, dan state khusus untuk fitur tertentu (seperti auth, chat, archive, dll).
+- `src/shared`: Berisi komponen UI (seperti button, input, header, sidebar), utils, dan tipe data yang digunakan di banyak tempat.
+- `src/lib`: Konfigurasi global, utility auth, konfigurasi prisma.
+
+## 2. JIKA INGIN MENGUBAH DASHBOARD
+- Tampilan Halaman Dashboard: `src/app/(main)/dashboard/page.tsx`
+- Jika halaman dashboard menggunakan komponen spesifik (seperti list server, statistik), periksa di dalam `src/features/dashboard` (jika ada) atau di `src/features/servers`.
+- Layout utama yang membungkus Dashboard (Header & Sidebar): `src/app/(main)/layout.tsx`
+
+## 3. JIKA INGIN MENGUBAH LAYOUT UTAMA (Header / Sidebar)
+- Header: `src/shared/components/layout/header.tsx`
+- Sidebar: `src/shared/components/layout/sidebar.tsx` (jika ada)
+
+## 4. JIKA INGIN MENGUBAH FITUR SPESIFIK
+- **Autentikasi (Login/Register):** 
+  - Routing API: `src/app/api/auth/...`
+  - Halaman UI: `src/app/(auth)/...`
+  - Komponen & Logika: `src/features/auth/...`
+- **Chat Server:**
+  - Halaman UI: `src/app/(main)/server/[serverId]/page.tsx` (atau sub-rutenya)
+  - API: `src/app/api/servers/[serverId]/chat/route.ts`
+  - Komponen & UI Chat: `src/features/chat/components/chat-box.tsx`
+- **Arsip Kontak & Kenangan (Memories):**
+  - Halaman UI: `src/app/(main)/server/[serverId]/archive/...`
+  - Komponen UI: `contacts-client.tsx` dan `memories-client.tsx` di dalam folder archive tersebut.
+  - API: `src/app/api/servers/[serverId]/contacts` dan `memories`
+
+## 5. DATABASE & SCHEMA (Prisma)
+- File schema berada di `prisma/schema.prisma`.
+- Setelah melakukan perubahan pada schema, selalu jalankan `npx prisma db push` atau `npx prisma migrate dev`.
+- Klien prisma di-inisialisasi di `src/lib/prisma.ts` atau `prisma.config.ts`.
+
+## CATATAN PENTING:
+- **Notifikasi**: Fitur notifikasi telah dihapus dari sistem. Jangan mencoba memanggil atau mencari tabel/API Notifikasi.
+- Saat membuat atau mengedit komponen UI yang menggunakan hook React (`useState`, `useEffect`), pastikan menambahkan `"use client";` di baris paling atas.
+- Untuk styling, gunakan Tailwind CSS kelas.
