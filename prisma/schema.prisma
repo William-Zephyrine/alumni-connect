@@ -16,7 +16,8 @@ model User {
   passwordHash String
   avatarUrl    String?
   phone        String?
-  dateOfBirth  String?
+  dateOfBirth     String?
+  graduationYear  Int?
   
   // About Me
   headline     String?
