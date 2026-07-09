@@ -1,8 +1,3 @@
-Loaded Prisma config from prisma.config.ts.
-
--- CreateSchema
-CREATE SCHEMA IF NOT EXISTS "public";
-
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -177,4 +172,3 @@ ALTER TABLE "Announcement" ADD CONSTRAINT "Announcement_serverId_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "Event" ADD CONSTRAINT "Event_serverId_fkey" FOREIGN KEY ("serverId") REFERENCES "Server"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
