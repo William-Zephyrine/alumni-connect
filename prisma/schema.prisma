@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,60 +7,50 @@ datasource db {
 }
 
 model User {
-  id           String         @id @default(cuid())
-  fullName     String
-  email        String         @unique
-  passwordHash String
-  avatarUrl    String?
-  phone        String?
-  dateOfBirth     String?
-  graduationYear  Int?
-  
-  // About Me
-  headline     String?
-  bio          String?
-  
-  // Professional Info
-  occupation   String?
-  company      String?
-  position     String?
-  
-  // Location
-  city         String?
-  province     String?
-  country      String?
-  
-  // Social Media
-  linkedin     String?
-  instagram    String?
-  facebook     String?
-  website      String?
-
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  
-  servers      Server[]       @relation("ServerOwner")
-  memberships  ServerMember[]
-  messages     Message[]
-  media        MemoryMedia[]
+  id             String         @id @default(cuid())
+  fullName       String
+  email          String         @unique
+  passwordHash   String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  avatarUrl      String?
+  city           String?
+  company        String?
+  country        String?
+  facebook       String?
+  graduationYear Int?
+  instagram      String?
+  linkedin       String?
+  occupation     String?
+  phone          String?
+  position       String?
+  province       String?
+  website        String?
+  bio            String?
+  dateOfBirth    String?
+  headline       String?
+  media          MemoryMedia[]
+  messages       Message[]
+  servers        Server[]       @relation("ServerOwner")
+  memberships    ServerMember[]
 }
 
 model Server {
-  id             String         @id @default(cuid())
-  serverCode     String         @unique
+  id             String             @id @default(cuid())
+  serverCode     String             @unique
   schoolName     String
   graduationYear Int
   description    String?
   ownerId        String
-  owner          User           @relation("ServerOwner", fields: [ownerId], references: [id])
-  createdAt      DateTime       @default(now())
-  members        ServerMember[]
-  messages       Message[]
+  createdAt      DateTime           @default(now())
   contacts       AlumniContact[]
-  media          MemoryMedia[]
-  adminCodes     ArchiveAdminCode[]
   announcements  Announcement[]
+  adminCodes     ArchiveAdminCode[]
   events         Event[]
+  media          MemoryMedia[]
+  messages       Message[]
+  owner          User               @relation("ServerOwner", fields: [ownerId], references: [id])
+  members        ServerMember[]
 }
 
 model ServerMember {
@@ -78,25 +65,23 @@ model ServerMember {
 }
 
 model Message {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   serverId  String
   userId    String
   message   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  edited    Boolean  @default(false)
-  isDeleted Boolean  @default(false)
-  
+  createdAt DateTime  @default(now())
+  edited    Boolean   @default(false)
+  updatedAt DateTime  @updatedAt
+  isDeleted Boolean   @default(false)
   replyToId String?
   replyTo   Message?  @relation("MessageReplies", fields: [replyToId], references: [id])
   replies   Message[] @relation("MessageReplies")
-
-  server    Server   @relation(fields: [serverId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  server    Server    @relation(fields: [serverId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
 }
 
 model AlumniContact {
-  id             String @id @default(cuid())
+  id             String  @id @default(cuid())
   serverId       String
   fullName       String
   graduationYear Int
@@ -105,19 +90,19 @@ model AlumniContact {
   address        String?
   occupation     String?
   company        String?
-  server         Server @relation(fields: [serverId], references: [id])
+  server         Server  @relation(fields: [serverId], references: [id])
 }
 
 model MemoryMedia {
-  id        String   @id @default(cuid())
-  serverId  String
-  title     String
-  mediaUrl  String
-  mediaType String // e.g., "image", "video", "document"
+  id         String   @id @default(cuid())
+  serverId   String
+  title      String
+  mediaUrl   String
+  mediaType  String
   uploadedBy String
-  createdAt DateTime @default(now())
-  server    Server   @relation(fields: [serverId], references: [id])
-  user      User     @relation(fields: [uploadedBy], references: [id])
+  createdAt  DateTime @default(now())
+  server     Server   @relation(fields: [serverId], references: [id])
+  user       User     @relation(fields: [uploadedBy], references: [id])
 }
 
 model ArchiveAdminCode {
@@ -149,4 +134,3 @@ model Event {
   updatedAt   DateTime @updatedAt
   server      Server   @relation(fields: [serverId], references: [id])
 }
-
