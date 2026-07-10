@@ -8,9 +8,10 @@ import { Header } from "./header";
 interface ShellProps {
   children: React.ReactNode;
   userName?: string;
+  userId?: string;
 }
 
-export function Shell({ children, userName }: ShellProps) {
+export function Shell({ children, userName, userId }: ShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -36,6 +37,7 @@ export function Shell({ children, userName }: ShellProps) {
       <div className="flex-1 flex flex-col min-w-0 h-full">
         <Header
           userName={userName}
+          userId={userId}
           onMenuClick={() => setMobileOpen(true)}
         />
         <main className="flex-1 overflow-y-auto">

@@ -16,7 +16,7 @@ export default async function MainLayout({
   }
 
   return (
-    <Shell userName={user.fullName}>
+    <Shell userName={user.fullName} userId={user.id}>
       {children}
     </Shell>
   );

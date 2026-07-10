@@ -1,5 +1,6 @@
-import { Server as NetServer } from "http";
-import { NextApiRequest, NextApiResponse } from "next";
+import type { Server as HTTPServer } from "http";
+import type { NextApiRequest, NextApiResponse } from "next";
+import type { Socket as NetSocket } from "net";
 import { Server as ServerIO } from "socket.io";
 
 export const config = {
@@ -8,26 +9,28 @@ export const config = {
   },
 };
 
-// Track unique users. 
-// Using a Map: socketId -> userId to handle disconnects properly.
 const activeUsers = new Map<string, string>();
 
-const ioHandler = (req: NextApiRequest, res: any) => {
-  if (req.method === 'GET') {
-    // Return count of unique users
-    const uniqueUsers = new Set(activeUsers.values());
-    return res.status(200).json({ count: uniqueUsers.size });
-  }
+interface CustomSocketResponse extends NextApiResponse {
+  socket: NetSocket & {
+    server: HTTPServer & {
+      io?: ServerIO;
+    };
+  };
+}
 
+const ioHandler = (req: NextApiRequest, res: CustomSocketResponse) => {
   if (!res.socket.server.io) {
-    console.log("*First use, starting socket.io");
-    const httpServer: NetServer = res.socket.server as any;
-    const io = new ServerIO(httpServer, {
+    const io = new ServerIO(res.socket.server, {
       path: "/api/socket",
       addTrailingSlash: false,
+      transports: ["polling", "websocket"],
+      allowUpgrades: true,
+      pingTimeout: 60000,
+      pingInterval: 25000,
       cors: {
         origin: "*",
-      }
+      },
     });
     res.socket.server.io = io;
 
@@ -35,29 +38,33 @@ const ioHandler = (req: NextApiRequest, res: any) => {
       const userId = socket.handshake.query.userId as string;
       if (userId) {
         activeUsers.set(socket.id, userId);
-        console.log(`User ${userId} connected with socket ${socket.id}`);
       }
 
-      socket.on("join-server", (serverId) => {
-        socket.join(serverId);
-        console.log(`Socket ${socket.id} joined server ${serverId}`);
+      socket.on("join-server", (serverId: string) => {
+        void socket.join(serverId);
       });
 
-      socket.on("send-message", (data) => {
+      socket.on("leave-server", (serverId: string) => {
+        void socket.leave(serverId);
+      });
+
+      socket.on("send-message", (data: { serverId: string; message: unknown }) => {
         socket.to(data.serverId).emit("new-message", data.message);
       });
 
-      socket.on("edit-message", (data) => {
+      socket.on("edit-message", (data: { serverId: string; message: unknown }) => {
         socket.to(data.serverId).emit("message-updated", data.message);
       });
 
-      socket.on("delete-message", (data) => {
-        socket.to(data.serverId).emit("message-deleted", data);
-      });
+      socket.on(
+        "delete-message",
+        (data: { serverId: string; messageId: string; mode: string; updatedMessage?: unknown }) => {
+          socket.to(data.serverId).emit("message-deleted", data);
+        }
+      );
 
       socket.on("disconnect", () => {
         activeUsers.delete(socket.id);
-        console.log("Client disconnected", socket.id);
       });
     });
   }

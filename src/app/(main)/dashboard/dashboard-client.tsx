@@ -35,6 +35,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { writeToClipboard } from "@/shared/utils/clipboard";
 
 interface DashboardClientProps {
   servers: any[];
@@ -181,8 +182,8 @@ export function DashboardClient({ servers, stats }: DashboardClientProps) {
     }
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+  const copyToClipboard = async (text: string) => {
+    await writeToClipboard(text);
     toast.success("ID Server disalin!");
     setActiveMenu(null);
   };

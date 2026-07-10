@@ -2,32 +2,33 @@
 
 import { useEffect } from "react";
 import { Menu } from "lucide-react";
-import { io } from "socket.io-client";
+import { acquireSocket, releaseSocket } from "@/lib/socket/client";
 
 interface HeaderProps {
   userName?: string;
+  userId?: string;
   onMenuClick?: () => void;
 }
 
-export function Header({ userName, onMenuClick }: HeaderProps) {
+export function Header({ userName, userId, onMenuClick }: HeaderProps) {
   useEffect(() => {
-    const socket = io(process.env.NEXT_PUBLIC_APP_URL || "", {
-      path: "/api/socket",
-      addTrailingSlash: false,
-    });
+    if (!userId) return;
+
+    const socket = acquireSocket(userId);
 
     fetch("/api/servers/me")
       .then((res) => res.json())
-      .then((servers: { id: string }[]) => {
+      .then((data: unknown) => {
+        const servers = data as { id: string }[];
         if (Array.isArray(servers)) {
           servers.forEach((server) => socket.emit("join-server", server.id));
         }
       });
 
     return () => {
-      socket.disconnect();
+      releaseSocket();
     };
-  }, []);
+  }, [userId]);
 
   return (
     <header className="h-14 md:h-16 border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-30 px-4 md:px-6 flex items-center justify-between shrink-0">
