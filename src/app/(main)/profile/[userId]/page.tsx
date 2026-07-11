@@ -10,10 +10,10 @@ import {
   Calendar, 
   MessageSquare, 
   Image as ImageIcon,
-  ChevronLeft,
   Globe
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
+import { BackButton } from "@/shared/components/ui/back-button";
 import Link from "next/link";
 
 export default async function PublicProfilePage({
@@ -50,9 +50,7 @@ export default async function PublicProfilePage({
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-20">
       {/* Back Button */}
-      <Link href="/alumni" className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors font-medium">
-        <ChevronLeft size={20} /> Kembali ke Direktori
-      </Link>
+      <BackButton />
 
       {/* Profile Header */}
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
@@ -76,7 +74,7 @@ export default async function PublicProfilePage({
           <div className="space-y-1">
             <h1 className="text-3xl font-bold text-gray-900">{user.fullName}</h1>
             <p className="text-blue-600 font-bold flex items-center gap-2">
-              Alumni Angkatan {user.graduationYear || '-'}
+              {user.graduationYear || ''}
             </p>
           </div>
 

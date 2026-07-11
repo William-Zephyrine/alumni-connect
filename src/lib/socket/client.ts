@@ -6,7 +6,7 @@ let instances = 0;
 export function acquireSocket(userId: string): Socket {
   instances++;
   if (!socket) {
-    socket = io(process.env.NEXT_PUBLIC_APP_URL || "", {
+    socket = io(process.env.NEXT_PUBLIC_APP_URL || undefined, {
       path: "/api/socket",
       addTrailingSlash: false,
       query: { userId },

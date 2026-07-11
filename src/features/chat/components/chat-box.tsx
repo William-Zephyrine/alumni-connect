@@ -258,9 +258,12 @@ export function ChatBox({ serverId, userId, initialMessages }: ChatBoxProps) {
                 showName && "mt-4"
               )}
             >
-              {!isMe && !isDeleted && (
-                <div className={cn("shrink-0", !showName && "invisible")}>
-                  <div className="w-8 h-8 rounded-xl bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-500 dark:text-zinc-400">
+              {!isMe && (
+                <div className={cn("shrink-0", !showName && !isDeleted && "invisible")}>
+                  <div className={cn(
+                    "w-8 h-8 rounded-xl bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-500 dark:text-zinc-400",
+                    isDeleted && "opacity-50"
+                  )}>
                     {msg.user.fullName.charAt(0)}
                   </div>
                 </div>
