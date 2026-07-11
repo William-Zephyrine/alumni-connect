@@ -29,11 +29,14 @@ app.prepare().then(() => {
     },
   });
 
+  console.log("[SERVER] Socket.IO initialized on path: /api/socket");
+
   io.engine.on("connection_error", (err) => {
     console.error("[SOCKET] Connection error:", err.message);
   });
 
   io.on("connection", (socket) => {
+    console.log("[SOCKET] Client connected:", socket.id);
     const userId = socket.handshake.query.userId;
     if (userId) {
       activeUsers.set(socket.id, userId);

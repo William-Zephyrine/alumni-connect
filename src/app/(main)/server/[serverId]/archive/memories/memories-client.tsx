@@ -43,9 +43,10 @@ export function MemoriesClient({ serverId, initialMemories }: MemoriesClientProp
   const [socket, setSocket] = useState<any>(null);
 
   useEffect(() => {
-    const socketInstance = io(process.env.NEXT_PUBLIC_APP_URL || "", {
+    const socketInstance = io(window.location.origin, {
       path: "/api/socket",
       addTrailingSlash: false,
+      transports: ["polling", "websocket"],
     });
     
     socketInstance.on("connect", () => {
