@@ -26,11 +26,11 @@ export async function GET(
           }
         }
       },
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
       take: 100,
     });
     
-    return NextResponse.json(messages);
+    return NextResponse.json(messages.reverse());
   } catch (error) {
     return NextResponse.json({ message: "Error" }, { status: 500 });
   }

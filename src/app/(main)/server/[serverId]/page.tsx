@@ -26,12 +26,12 @@ export default async function ServerPage({
         }
       }
     },
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: "desc" },
     take: 100,
   });
 
-  // Map Date to string for client component
-  const formattedMessages = initialMessages.map(msg => ({
+  // Reverse to chronological order, map Date to string
+  const formattedMessages = initialMessages.reverse().map(msg => ({
     ...msg,
     createdAt: msg.createdAt.toISOString()
   }));
